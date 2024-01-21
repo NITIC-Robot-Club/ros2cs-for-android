@@ -23,6 +23,8 @@ find_package(ros2cs_common REQUIRED)
 # Get a list of typesupport implementations from valid rmw implementations.
 rosidl_generator_cs_get_typesupports(_typesupport_impls)
 
+#message("debug_han ${_typesupport_impls}")
+
 if(_typesupport_impls STREQUAL "")
   message(WARNING "No valid typesupport for .NET generator. .NET messages will not be generated.")
   return()
@@ -236,7 +238,7 @@ foreach(_generated_msg_c_ts_file ${_generated_msg_c_ts_files})
     endif()
   endif()
 
-  message("Link libraries: ${PROJECT_NAME}__${_typesupport_impl}")
+#  message("Link libraries: ${PROJECT_NAME}__${_typesupport_impl}")
   target_link_libraries(${_target_name}
     ${PROJECT_NAME}__${_typesupport_impl}
     ${_extension_link_flags}
@@ -343,7 +345,7 @@ foreach(_generated_srv_c_ts_file ${_generated_srv_c_ts_files})
     endif()
   endif()
 
-  message("Link libraries: ${PROJECT_NAME}__${_typesupport_impl}")
+#  message("Link libraries: ${PROJECT_NAME}__${_typesupport_impl}")
   target_link_libraries(${_target_name}
     ${PROJECT_NAME}__${_typesupport_impl}
     ${_extension_link_flags}
@@ -392,7 +394,7 @@ foreach(_generated_srv_c_ts_file ${_generated_srv_c_ts_files})
 
 endforeach()
 
-message("Install targets")
+#message("Install targets")
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   install(TARGETS ${_target_name_lib} EXPORT ${_target_name}
     ARCHIVE DESTINATION lib

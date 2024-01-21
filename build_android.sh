@@ -72,7 +72,11 @@ ROS2CS_CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release \
 -DBUILD_TESTING=OFF \
 -DCMAKE_SHARED_LINKER_FLAGS="-Wl,-rpath,'\$ORIGIN',-rpath=.,--disable-new-dtags" \
 -DCMAKE_FIND_ROOT_PATH=${PWD}/install/ \
---no-warn-unused-cli"
+-DCMAKE_HAVE_LIBC_PTHREAD=1 \
+--no-warn-unused-cli \
+-Wno-deprecated \
+-Wno-pointer-bool-conversion"
+
 
 # 最初にrmwの実装をビルドしてないとrosidl_generator_csでC#用ライブラリがビルドされない
 colcon build \
@@ -81,11 +85,15 @@ colcon build \
 --packages-up-to rmw_fastrtps_cpp \
 --merge-install \
 --cmake-clean-cache \
---cmake-args ${ROS2CS_CMAKE_ARGS}
+--catkin-skip-building-tests \
+--cmake-args ${ROS2CS_CMAKE_ARGS} \
+--parallel-workers 1
 
 colcon build \
 --event-handlers console_stderr+ \
 --packages-ignore-regex ${PKG_IGNORE} \
 --merge-install \
 --cmake-clean-cache \
---cmake-args ${ROS2CS_CMAKE_ARGS}
+--catkin-skip-building-tests \
+--cmake-args ${ROS2CS_CMAKE_ARGS} \
+--parallel-workers 1
