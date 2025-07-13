@@ -78,11 +78,11 @@ repositories:
   eProsima/Fast-CDR:
     type: git
     url: https://github.com/eProsima/Fast-CDR.git
-    version: 2.x
+    version: v1.0.24
   eProsima/Fast-DDS:
     type: git
     url: https://github.com/eProsima/Fast-DDS.git
-    version: master
+    version: 2.6.x
   eProsima/foonathan_memory_vendor:
     type: git
     url: https://github.com/eProsima/foonathan_memory_vendor.git
@@ -91,6 +91,10 @@ repositories:
   ros2/rosidl_defaults:
     type: git
     url: https://github.com/ros2/rosidl_defaults.git
+    version: jazzy
+  ros2/rosidl_core:
+    type: git
+    url: https://github.com/ros2/rosidl_core.git
     version: jazzy
   ros2/common_interfaces:
     type: git
@@ -119,13 +123,8 @@ repositories:
   external/build_tools/dotnet_cmake_module:
     type: git
     url: https://github.com/RobotecAI/dotnet_cmake_module
-    version: master
+    version: 1.1.0
   external/build_tools/ament_cmake_export_assemblies:
     type: git
     url: https://github.com/RobotecAI/ament_cmake_export_assemblies
     version: master
-
-  ros2/rosidl_core:
-    type: git
-    url: https://github.com/ros2/rosidl_core.git
-    version: jazzy

@@ -28,6 +28,7 @@ namespace ROS2
   }
 
   public enum Platform {
+    And,
     Unix,
     MacOSX,
     WindowsDesktop,
@@ -48,11 +49,17 @@ namespace ROS2
     [DllImport ("kernel32.dll", EntryPoint = "FreeLibrary", SetLastError = true)]
     private static extern int FreeLibraryDesktop (IntPtr handle);
 
-    [DllImport ("libdl.so", EntryPoint = "dlopen")]
+    [DllImport ("libdl.so.2", EntryPoint = "dlopen")]
     private static extern IntPtr dlopen_unix (String fileName, int flags);
 
-    [DllImport ("libdl.so", EntryPoint = "dlclose")]
+    [DllImport ("libdl.so.2", EntryPoint = "dlclose")]
     private static extern int dlclose_unix (IntPtr handle);
+
+    [DllImport ("libdl.so", EntryPoint = "dlopen")]
+    private static extern IntPtr dlopen_and (String fileName, int flags);
+
+    [DllImport ("libdl.so", EntryPoint = "dlclose")]
+    private static extern int dlclose_and (IntPtr handle);
 
     [DllImport ("libdl.dylib", EntryPoint = "dlopen")]
     private static extern IntPtr dlopen_macosx (String fileName, int flags);
@@ -66,6 +73,8 @@ namespace ROS2
       switch (CheckPlatform ()) {
         case Platform.Unix:
           return new DllLoadUtilsUnix ();
+        case Platform.And:
+          return new DllLoadUtilsAnd ();
         case Platform.MacOSX:
           return new DllLoadUtilsMacOSX ();
         case Platform.WindowsDesktop:
@@ -100,8 +109,18 @@ namespace ROS2
 
     private static bool IsUnix () {
       try {
-        IntPtr ptr = dlopen_unix ("libdl.so", RTLD_NOW);
+        IntPtr ptr = dlopen_unix ("libdl.so.2", RTLD_NOW);
         dlclose_unix (ptr);
+        return true;
+      } catch (TypeLoadException) {
+        return false;
+      }
+    }
+
+    private static bool IsAnd () {
+      try {
+        IntPtr ptr = dlopen_and ("libdl.so", RTLD_NOW);
+        dlclose_and (ptr);
         return true;
       } catch (TypeLoadException) {
         return false;
@@ -122,6 +141,10 @@ namespace ROS2
           if (IsUnix())
           {
               return Platform.Unix;
+          }
+          else if (IsAnd())
+          {
+              return Platform.And;
           }
           else if (IsMacOSX())
           {
@@ -225,7 +248,7 @@ namespace ROS2
     }
   }
 
-  internal class DllLoadUtilsUnix : DllLoadUtils {
+  internal class DllLoadUtilsAnd : DllLoadUtils {
 
     [DllImport ("libdl.so", ExactSpelling = true)]
     private static extern IntPtr dlopen (String fileName, int flags);
@@ -237,6 +260,91 @@ namespace ROS2
     private static extern int dlclose (IntPtr handle);
 
     [DllImport ("libdl.so", ExactSpelling = true)]
+    private static extern IntPtr dlerror ();
+
+    const int RTLD_NOW = 0x00002;
+    const int RTLD_DEEPBIND = 0x00008;
+
+    //TODO (adamdbrw) Somewhat hacky solution to open (and dereference) the problematic library
+    //that otherwise causes crashes in Unity Editor.
+    private static bool libPreloaded = false;
+    void CheckPreloadLibraries()
+    {
+        if (libPreloaded || GlobalVariables.preloadLibraryName == "")
+            return;
+        Ros2csLogger.GetInstance().LogDebug("Preloading " + GlobalVariables.preloadLibraryName);
+        IntPtr libPtr = Load(GlobalVariables.preloadLibraryName);
+
+        Ros2csLogger.GetInstance().LogDebug("Preloading " + GlobalVariables.preloadLibraryName + " successful.");
+
+        libPreloaded = true;
+    }
+
+    public void FreeLibrary (IntPtr handle) {
+      dlclose (handle);
+    }
+
+    public IntPtr GetProcAddress (IntPtr dllHandle, string name) {
+      // clear previous errors if any
+      dlerror ();
+      var res = dlsym (dllHandle, name);
+      var errPtr = dlerror ();
+      if (errPtr != IntPtr.Zero) {
+        throw new Exception ("dlsym: " + Marshal.PtrToStringAnsi (errPtr));
+      }
+      return res;
+    }
+
+    private IntPtr Load(string libraryFileName) {
+      string libraryPath = GlobalVariables.absolutePath + libraryFileName;
+      string dlopenSearchString = libraryPath;
+      Ros2csLogger.GetInstance().LogDebug("Loading lib: " + dlopenSearchString);
+      IntPtr ptr = dlopen(dlopenSearchString, RTLD_NOW);
+      if (ptr == IntPtr.Zero) {
+        if (!String.IsNullOrEmpty(GlobalVariables.absolutePath)) {
+          // Fallback - look for library in default paths
+          var errPtr = dlerror ();
+          Ros2csLogger.GetInstance().LogDebug("Could not find " + dlopenSearchString + ": " + Marshal.PtrToStringAnsi (errPtr) + ". Fallback to " + libraryFileName);
+          dlopenSearchString = libraryFileName;
+          ptr = dlopen(dlopenSearchString, RTLD_NOW);
+        }
+      }      
+      if (ptr == IntPtr.Zero) {
+        throw new UnsatisfiedLinkError(dlopenSearchString);
+      }
+      Ros2csLogger.GetInstance().LogDebug("Loaded library: " + dlopenSearchString);
+      return ptr;
+    }
+
+    private IntPtr LoadLibraryByName(string libraryFileName) {
+      if (GlobalVariables.preloadLibrary)
+        CheckPreloadLibraries();
+      return Load(libraryFileName);
+    }
+
+    public IntPtr LoadLibrary(string fileName) {
+      string libraryName = "lib" + fileName + "_native.so";
+      return LoadLibraryByName(libraryName);
+    }
+
+    public IntPtr LoadLibraryNoSuffix(string fileName) {
+      string libraryName = "lib" + fileName + ".so";
+      return LoadLibraryByName(libraryName);
+    }
+  }
+
+  internal class DllLoadUtilsUnix : DllLoadUtils {
+
+    [DllImport ("libdl.so.2", ExactSpelling = true)]
+    private static extern IntPtr dlopen (String fileName, int flags);
+
+    [DllImport ("libdl.so.2", ExactSpelling = true)]
+    private static extern IntPtr dlsym (IntPtr handle, String symbol);
+
+    [DllImport ("libdl.so.2", ExactSpelling = true)]
+    private static extern int dlclose (IntPtr handle);
+
+    [DllImport ("libdl.so.2", ExactSpelling = true)]
     private static extern IntPtr dlerror ();
 
     const int RTLD_NOW = 0x00002;
