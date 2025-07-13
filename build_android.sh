@@ -73,7 +73,7 @@ ROS2CS_CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release \
 -DCOMPILE_EXAMPLES=OFF \
 -DBUILD_TESTING=OFF \
 -DCMAKE_SHARED_LINKER_FLAGS="-Wl,-rpath,'\$ORIGIN',-rpath=.,--disable-new-dtags" \
--DCMAKE_FIND_ROOT_PATH=${PWD}/install/ \
+-DCMAKE_FIND_ROOT_PATH=${PWD}/installs \
 -DPython3_EXECUTABLE=/usr/bin/python3.12 \
 -DPython3_INCLUDE_DIR=/usr/include/python3.12 \
 -DPython3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.12.so \
