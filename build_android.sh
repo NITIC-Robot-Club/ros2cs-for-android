@@ -84,7 +84,6 @@ ROS2CS_CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release \
 colcon build \
 --event-handlers console_stderr+ \
 --packages-ignore ${PKG_IGNORE} \
---packages-up-to rosidl_dynamic_typesupport_fastrtps \
 --merge-install \
 --cmake-clean-cache \
 --cmake-args ${ROS2CS_CMAKE_ARGS}
