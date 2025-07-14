@@ -6,7 +6,7 @@ display_usage() {
 }
 
 if [ -z "${ROS_DISTRO}" ]; then
-    echo "Source your ros2 distro first (foxy, galactic, humble or rolling are supported)"
+    echo "Source your ros2 distro first (foxy, galactic, humble, jazzy or rolling are supported)"
     exit 1
 fi
 
@@ -73,17 +73,18 @@ ROS2CS_CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release \
 -DCOMPILE_EXAMPLES=OFF \
 -DBUILD_TESTING=OFF \
 -DCMAKE_SHARED_LINKER_FLAGS="-Wl,-rpath,'\$ORIGIN',-rpath=.,--disable-new-dtags" \
--DCMAKE_FIND_ROOT_PATH=${PWD}/installs \
--DPython3_EXECUTABLE=/usr/bin/python3.12 \
--DPython3_INCLUDE_DIR=/usr/include/python3.12 \
--DPython3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.12.so \
+-DCMAKE_FIND_ROOT_PATH=${PWD}/install/ \
 --no-warn-unused-cli \
 -Wno-deprecated \
+-DPython3_EXECUTABLE=/usr/bin/python3 \
+-DPython3_INCLUDE_DIR=/usr/include/python3.12 \
+-DPython3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.12.so \
 -Wno-pointer-bool-conversion"
 
 colcon build \
 --event-handlers console_stderr+ \
 --packages-ignore ${PKG_IGNORE} \
+--packages-up-to rosidl_dynamic_typesupport_fastrtps \
 --merge-install \
 --cmake-clean-cache \
 --cmake-args ${ROS2CS_CMAKE_ARGS}
