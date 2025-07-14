@@ -120,6 +120,10 @@ repositories:
     type: git
     url: https://github.com/ros2/test_interface_files.git
     version: jazzy
+  ros2/rosidl_dynamic_typesupport_fastrtps:
+    type: git
+    url: https://github.com/ros2/rosidl_dynamic_typesupport_fastrtps.git
+    version: jazzy
   external/build_tools/dotnet_cmake_module:
     type: git
     url: https://github.com/RobotecAI/dotnet_cmake_module
@@ -128,7 +132,3 @@ repositories:
     type: git
     url: https://github.com/RobotecAI/ament_cmake_export_assemblies
     version: master
-  ros2/rosidl_dynamic_typesupport_fastrtps:
-    type: git
-    url: https://github.com/ros2/rosidl_dynamic_typesupport_fastrtps.git
-    version: jazzy
