@@ -107,6 +107,10 @@ repositories:
     type: git
     url: https://github.com/ros2/test_interface_files.git
     version: jazzy
+  ros2/rosidl_dynamic_typesupport:
+    type: git
+    url: https://github.com/ros2/rosidl_dynamic_typesupport.git
+    version: jazzy
   ros2/rosidl_dynamic_typesupport_fastrtps:
     type: git
     url: https://github.com/ros2/rosidl_dynamic_typesupport_fastrtps.git
