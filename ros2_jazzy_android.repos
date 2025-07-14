@@ -130,7 +130,7 @@ repositories:
   eProsima/Fast-CDR:
     type: git
     url: https://github.com/eProsima/Fast-CDR.git
-    version: v1.0.24
+    version: 2.x
   eProsima/Fast-DDS:
     type: git
     url: https://github.com/hiro-han/Fast-DDS.git
