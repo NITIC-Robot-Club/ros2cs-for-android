@@ -75,19 +75,6 @@ repositories:
     type: git
     url: https://github.com/ros2/libyaml_vendor.git
     version: jazzy
-  eProsima/Fast-CDR:
-    type: git
-    url: https://github.com/eProsima/Fast-CDR.git
-    version: v1.0.24
-  eProsima/Fast-DDS:
-    type: git
-    url: https://github.com/eProsima/Fast-DDS.git
-    version: 2.6.x
-  eProsima/foonathan_memory_vendor:
-    type: git
-    url: https://github.com/eProsima/foonathan_memory_vendor.git
-    version: master
-
   ros2/rosidl_defaults:
     type: git
     url: https://github.com/ros2/rosidl_defaults.git
@@ -131,4 +118,16 @@ repositories:
   external/build_tools/ament_cmake_export_assemblies:
     type: git
     url: https://github.com/RobotecAI/ament_cmake_export_assemblies
+    version: master
+  eProsima/Fast-CDR:
+    type: git
+    url: https://github.com/eProsima/Fast-CDR.git
+    version: v1.0.24
+  eProsima/Fast-DDS:
+    type: git
+    url: https://github.com/eProsima/Fast-DDS.git
+    version: 2.6.x
+  eProsima/foonathan_memory_vendor:
+    type: git
+    url: https://github.com/eProsima/foonathan_memory_vendor.git
     version: master
